@@ -866,9 +866,8 @@ def relayer_chain_config(data_dir, chain):
         "rpc_timeout": "10s",
         "account_prefix": chain.get("account-prefix", "cro"),
         "store_prefix": "ibc",
-        "gas": 300000,
-        "fee_denom": "basecro",
-        "fee_amount": 0,
+        "max_gas": 300000,
+        "gas_price": {"price": 0, "denom": "basecro"},
         "trusting_period": "336h",
     }
 
@@ -903,25 +902,25 @@ def init_cluster(
             tomlkit.dumps(
                 {
                     "global": {
-                        "strategy": "naive",
+                        "strategy": "all",
                         "log_level": "info",
                     },
                     "chains": [
                         relayer_chain_config(data_dir, chain) for chain in chains
                     ],
-                    "connections": [
-                        {
-                            "a_chain": path["src"]["chain-id"],
-                            "b_chain": path["dst"]["chain-id"],
-                            "paths": [
-                                {
-                                    "a_port": path["src"]["port-id"],
-                                    "b_port": path["dst"]["port-id"],
-                                }
-                            ],
-                        }
-                        for path in paths.values()
-                    ],
+                    # "connections": [
+                    #     {
+                    #         "a_chain": path["src"]["chain-id"],
+                    #         "b_chain": path["dst"]["chain-id"],
+                    #         "paths": [
+                    #             {
+                    #                 "a_port": path["src"]["port-id"],
+                    #                 "b_port": path["dst"]["port-id"],
+                    #             }
+                    #         ],
+                    #     }
+                    #     for path in paths.values()
+                    # ],
                 }
             )
         )
@@ -939,8 +938,8 @@ def init_cluster(
                     chain["chain_id"],
                     "--mnemonic",
                     mnemonic,
-                    "--coin-type",
-                    str(chain.get("coin-type", 394)),
+                    "--hd-path",
+                    "m/44'/" + str(chain.get("coin-type", 394)) + "'/0'/0/0",
                 ],
                 check=True,
             )
