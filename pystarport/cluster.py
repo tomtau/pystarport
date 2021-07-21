@@ -987,8 +987,7 @@ def supervisord_ini_group(chain_ids, paths):
         cfg[f"program:relayer-{path}"] = dict(
             COMMON_PROG_OPTIONS,
             command=(
-                f"hermes -c %(here)s/relayer.toml start {src} {dst} "
-                "-p transfer -c channel-0"
+                f"hermes -c %(here)s/relayer.toml start"
             ),
             stdout_logfile=f"%(here)s/relayer-{path}.log",
             autostart="false",
