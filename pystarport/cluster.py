@@ -1067,6 +1067,8 @@ def edit_app_cfg(path, base_port, app_config):
     doc = tomlkit.parse(open(path).read())
     doc["grpc-web"] = {}
     doc["grpc-web"]["address"] = "0.0.0.0:%d" % ports.grpc_web_port(base_port)
+    doc["grpc-web"]["enable"] = True
+    doc["grpc-web"]["enable-unsafe-cors"] = True
     patch_toml_doc(doc, jsonmerge.merge(default_patch, app_config))
     open(path, "w").write(tomlkit.dumps(doc))
 
